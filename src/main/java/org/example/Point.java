@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Point {
 	private double value;
-	private boolean isWorse;
+	//private boolean isWorse;
 	List<String> header;
 	private double ownVector;
 	private double weightOfCriteria;

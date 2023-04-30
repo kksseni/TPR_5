@@ -17,4 +17,8 @@ public class Point {
 	List<String> header;
 	private double ownVector;
 	private double weightOfCriteria;
+
+	public Point(double value) {
+		this.value = value;
+	}
 }

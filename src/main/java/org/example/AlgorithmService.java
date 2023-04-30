@@ -178,7 +178,7 @@ public class AlgorithmService {
         List<Double> qualityIndicators = new ArrayList<>();
         for (int i = 0; i<alternativeMatrix.length; i++) {
             for (int j= 0; j < alternativeMatrix.length; j++) {
-                //qualityIndicators.add(criteriaMatrix[i]);
+                qualityIndicators.add(criteriaMatrix[i][j]);
             }
         }
     }

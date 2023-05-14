@@ -35,27 +35,28 @@ public class AlgorithmService {
 
     private void countOwnVectorForCriteria() {
         for (int i = 0; i < criteriaMatrix.length; i++) {
-            criteriaMatrix[i][criteriaMatrix.length - 1].setOwnVector(Math.pow(criteriaMatrix[i][0].getValue() * criteriaMatrix[i][1].getValue() * criteriaMatrix[i][2].getValue(), 1.0 / criteriaMatrix.length));
+            criteriaMatrix[i][criteriaMatrix.length - 1].setOwnVector(Math.pow(criteriaMatrix[i][0].getValue() * criteriaMatrix[i][1].getValue() * criteriaMatrix[i][2].getValue()* criteriaMatrix[i][3].getValue(), 1.0 / criteriaMatrix.length));
         }
     }
     private void countOwnVectorForAlternative() {
         for (int k = 0; k < alternativeMatrix.length; k++) {
             for (int i = 0; i < alternativeMatrix.length; i++) {
-                alternativeMatrix[k][i][alternativeMatrix.length - 1].setOwnVector(Math.pow(alternativeMatrix[k][i][0].getValue() * alternativeMatrix[k][i][1].getValue() * alternativeMatrix[k][i][2].getValue(), 1.0 / alternativeMatrix.length));
+                alternativeMatrix[k][i][alternativeMatrix.length - 1].setOwnVector(Math.pow(alternativeMatrix[k][i][0].getValue() * alternativeMatrix[k][i][1].getValue() * alternativeMatrix[k][i][2].getValue()* alternativeMatrix[k][i][3].getValue()* alternativeMatrix[k][i][4].getValue(), 1.0 / alternativeMatrix.length));
             }
         }
     }
     private void countWeightOfCriteria() {
         for (int i = 0; i < criteriaMatrix.length; i++) {
             criteriaMatrix[i][criteriaMatrix.length - 1].setWeightOfCriteria(criteriaMatrix[i][criteriaMatrix.length - 1].getOwnVector() / (criteriaMatrix[0][criteriaMatrix.length - 1].getOwnVector() +
-                    criteriaMatrix[1][criteriaMatrix.length - 1].getOwnVector() + criteriaMatrix[2][criteriaMatrix.length - 1].getOwnVector()));
+                    criteriaMatrix[1][criteriaMatrix.length - 1].getOwnVector() + criteriaMatrix[2][criteriaMatrix.length - 1].getOwnVector()+ criteriaMatrix[3][criteriaMatrix.length - 1].getOwnVector()));
         }
     }
     private void countWeightOfAlternative() {
         for (int k = 0; k < alternativeMatrix.length; k++) {
             for (int i = 0; i < alternativeMatrix.length; i++) {
                 alternativeMatrix[k][i][alternativeMatrix.length - 1].setWeightOfCriteria(alternativeMatrix[k][i][alternativeMatrix.length - 1].getOwnVector() / (alternativeMatrix[k][0][alternativeMatrix.length - 1].getOwnVector() +
-                        alternativeMatrix[k][1][criteriaMatrix.length - 1].getOwnVector() + alternativeMatrix[k][2][alternativeMatrix.length - 1].getOwnVector()));
+                        alternativeMatrix[k][1][alternativeMatrix.length - 1].getOwnVector() + alternativeMatrix[k][2][alternativeMatrix.length - 1].getOwnVector()+ alternativeMatrix[k][3][alternativeMatrix.length - 1].getOwnVector()
+                        + alternativeMatrix[k][4][alternativeMatrix.length - 1].getOwnVector()));
             }
         }
     }
@@ -65,12 +66,15 @@ public class AlgorithmService {
         headersForCriteriaMatrix.add("C1");
         headersForCriteriaMatrix.add("C2");
         headersForCriteriaMatrix.add("C3");
+        headersForCriteriaMatrix.add("C4");
     }
     private void fillHeadersForAlternativeMatrix() {
         headersForAlternativeMatrix = new ArrayList<>();
         headersForAlternativeMatrix.add("A1");
         headersForAlternativeMatrix.add("A2");
         headersForAlternativeMatrix.add("A3");
+        headersForAlternativeMatrix.add("A4");
+        headersForAlternativeMatrix.add("A5");
     }
 
     private Point compareCriteria() {
@@ -88,7 +92,6 @@ public class AlgorithmService {
 
     private void fillScale() {
         scale = new ArrayList<>();
-        scale.add(1.0);
         scale.add(3.0);
         scale.add(5.0);
         scale.add(7.0);
@@ -102,19 +105,19 @@ public class AlgorithmService {
 
         System.out.print("\t");
         for (String header : headersForCriteriaMatrix) {
-            System.out.print(String.format("%-7s", header));
+            System.out.print(String.format("| %-5s", header));
         }
-        System.out.print(String.format("%-7s %-7s", "W", "w"));
-        System.out.println();
+        System.out.println(String.format("| %-5s| %-5s|", "W", "w"));
+        System.out.println("-----------------------------------------------");
 
         for (int i = 0; i < criteriaMatrix.length; i++) {
             System.out.print(headersForCriteriaMatrix.get(i) + "\t");
             for (int j = 0; j < criteriaMatrix.length; j++) {
-                System.out.print(String.format("%-7s", decimalFormat.format(criteriaMatrix[i][j].getValue())));
+                System.out.print(String.format("| %-5s", decimalFormat.format(criteriaMatrix[i][j].getValue())));
             }
-            System.out.print(String.format("%-7s", decimalFormat.format(criteriaMatrix[i][criteriaMatrix.length - 1].getOwnVector())));
-            System.out.print(String.format("%-7s", decimalFormat.format(criteriaMatrix[i][criteriaMatrix.length - 1].getWeightOfCriteria())));
-            System.out.println();
+            System.out.print(String.format("| %-5s", decimalFormat.format(criteriaMatrix[i][criteriaMatrix.length - 1].getOwnVector())));
+            System.out.println(String.format("| %-5s|", decimalFormat.format(criteriaMatrix[i][criteriaMatrix.length - 1].getWeightOfCriteria())));
+            System.out.println("-----------------------------------------------");
         }
     }
 
@@ -147,39 +150,51 @@ public class AlgorithmService {
 		decimalFormat.setMaximumFractionDigits(2);
 		decimalFormat.setMinimumFractionDigits(2);
 
-        for (int k = 0; k < alternativeMatrix.length; k++) {
+        for (int k = 0; k < criteriaMatrix.length; k++) {
 
             printHeaderForAlternativeMatrix(k);
-
+            System.out.println("------------------------------------------------------");
 			for (int i = 0; i < alternativeMatrix.length; i++) {
 				System.out.print(headersForAlternativeMatrix.get(i) + "\t");
 				for (int j = 0; j < alternativeMatrix.length; j++) {
-					System.out.print(String.format("%-7s", decimalFormat.format(alternativeMatrix[k][i][j].getValue())));
+					System.out.print(String.format("| %-5s", decimalFormat.format(alternativeMatrix[k][i][j].getValue())));
 				}
-				System.out.print(String.format("%-7s", decimalFormat.format(alternativeMatrix[k][i][alternativeMatrix.length - 1].getOwnVector())));
-				System.out.print(String.format("%-7s", decimalFormat.format(alternativeMatrix[k][i][alternativeMatrix.length - 1].getWeightOfCriteria())));
-				System.out.println();
+				System.out.print(String.format("| %-5s", decimalFormat.format(alternativeMatrix[k][i][alternativeMatrix.length - 1].getOwnVector())));
+				System.out.println(String.format("| %-5s|", decimalFormat.format(alternativeMatrix[k][i][alternativeMatrix.length - 1].getWeightOfCriteria())));
+                System.out.println("------------------------------------------------------");
 			}
             System.out.println();
 		}
 	}
 
     private void printHeaderForAlternativeMatrix(int k) {
-        System.out.println("According to criterion C"+(k+1));
+        System.out.println("\t\t\t\tFor criterion C"+(k+1));
         System.out.print("\t");
         for (String header : headersForAlternativeMatrix) {
-            System.out.print(String.format("%-7s", header));
+            System.out.print(String.format("| %-5s", header));
         }
-        System.out.print(String.format("%-7s %-7s", "W", "w"));
+        System.out.print(String.format("| %-5s| %-5s|", "W", "w"));
         System.out.println();
     }
 
     public void calcQualityIndicator() {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(2);
+
         List<Double> qualityIndicators = new ArrayList<>();
-        for (int i = 0; i<alternativeMatrix.length; i++) {
-            for (int j= 0; j < alternativeMatrix.length; j++) {
-                qualityIndicators.add(criteriaMatrix[i][j]);
+        for (int k = 0; k<alternativeMatrix.length; k++) {
+            System.out.print("Quality indicator for A"+(k+1)+" = ");
+            double qualityIndicator = 0;
+            for (int i= 0; i < criteriaMatrix.length; i++) {
+                 qualityIndicator += criteriaMatrix[i][criteriaMatrix.length - 1].getWeightOfCriteria()
+                        * alternativeMatrix[i][k][alternativeMatrix.length - 1].getWeightOfCriteria();
+                System.out.print(decimalFormat.format(criteriaMatrix[i][criteriaMatrix.length - 1].getWeightOfCriteria())+
+                        " * "
+                        +decimalFormat.format(alternativeMatrix[i][k][alternativeMatrix.length - 1].getWeightOfCriteria())+" + ");
             }
+            qualityIndicators.add(qualityIndicator);
+            System.out.println(" = "+decimalFormat.format(qualityIndicator));
         }
     }
 }
